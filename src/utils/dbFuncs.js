@@ -121,6 +121,34 @@ getReviewDataById = async (id) => {
   }
 };
 
+getAllCarts = async () => {
+  try {
+    const queryString = `SELECT u.id AS user_id, u.username, CAST (SUM(p.price) as decimal (8,2)) AS total_cart_price FROM carts as c
+    INNER JOIN users AS u ON c.user_id = u.id
+    INNER JOIN products AS p ON p.id = c.product_id
+    GROUP BY (u.id)
+    ORDER BY u.id ASC`;
+    let response = await db.query(queryString);
+    return response;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+getSingleCart = async (id) => {
+  try {
+    const queryString = `SELECT u.id AS user_id, u.username, p.id AS product_id, p.name, p.price, p.imageurl FROM carts as c
+    INNER JOIN users AS u ON c.user_id = u.id
+    INNER JOIN products AS p ON p.id = c.product_id
+    WHERE c.user_id = ${parseInt(id)}
+    ORDER BY u.id ASC`;
+    const response = await db.query(queryString);
+    return response;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 module.exports = {
   findAll,
   findById,
@@ -133,4 +161,6 @@ module.exports = {
   getProductCountByCategory,
   getReviewsCountByProduct,
   getReviewDataById,
+  getAllCarts,
+  getSingleCart,
 };
