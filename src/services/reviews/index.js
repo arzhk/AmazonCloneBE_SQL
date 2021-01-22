@@ -64,16 +64,21 @@ router.post("/", async (req, res, next) => {
 
 router.put("/:id", async (req, res, next) => {
   try {
-    const findProduct = await findById("products", req.params.id);
-    if (findProduct.rowCount !== 0) {
-      const response = await findByIdAndUpdate("products", req.params.id, req.body);
-      if (response.rowCount === 1) {
-        res.send("Successfully updated product data.");
+    const findReview = await findById("reviews", req.params.id);
+    const findProductId = await findById("products", req.body.product_id);
+    if (findProductId.rowCount !== 0) {
+      if (findReview.rowCount !== 0) {
+        const response = await findByIdAndUpdate("reviews", req.params.id, req.body);
+        if (response.rowCount === 1) {
+          res.send("Successfully updated review data.");
+        } else {
+          res.status(400).send("Error updating review data.");
+        }
       } else {
-        res.status(400).send("Error updating product data.");
+        res.status(404).send("Review with that ID not found.");
       }
     } else {
-      res.status(404).send("Product with that ID not found.");
+      res.status(404).send("You have entered an invalid Product ID.");
     }
   } catch (err) {
     console.error(err);
@@ -82,16 +87,16 @@ router.put("/:id", async (req, res, next) => {
 
 router.delete("/:id", async (req, res, next) => {
   try {
-    const findProduct = await findById("products", req.params.id);
-    if (findProduct.rowCount !== 0) {
-      const response = await findByIdAndDelete("products", req.params.id);
+    const findReview = await findById("reviews", req.params.id);
+    if (findReview.rowCount !== 0) {
+      const response = await findByIdAndDelete("reviews", req.params.id);
       if (response.rowCount === 1) {
-        res.send("Product successfully deleted.");
+        res.send("Review successfully deleted.");
       } else {
         throw new Error("Error deleting product");
       }
     } else {
-      res.status(404).send("Product with that ID not found.");
+      res.status(404).send("Review with that ID not found.");
     }
   } catch (err) {
     console.error(err);
