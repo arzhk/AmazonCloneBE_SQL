@@ -7,6 +7,7 @@ const {
   findByIdAndUpdate,
   findByIdAndDelete,
   getReviewsCountByProduct,
+  findReviewsByProductId,
 } = require("../../utils/dbFuncs.js");
 
 router.get("/", async (req, res, next) => {
@@ -38,6 +39,18 @@ router.get("/:id", async (req, res, next) => {
       } else {
         res.status(404).send("No review found with that ID");
       }
+    }
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+router.get("/product/:productId", async (req, res, next) => {
+  try {
+    const findProduct = await findById("products", req.params.productId);
+    if (findProduct.rowCount !== 0) {
+      const response = await findReviewsByProductId(req.params.productId);
+      res.send(response.rows);
     }
   } catch (err) {
     console.error(err);

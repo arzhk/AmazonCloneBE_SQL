@@ -2,7 +2,7 @@ const db = require("./db.js");
 
 findAll = async (tableName) => {
   try {
-    const queryString = `SELECT * FROM ${tableName};`;
+    const queryString = `SELECT * FROM ${tableName} ORDER BY id ASC;`;
     const response = await db.query(queryString);
     return response;
   } catch (err) {
@@ -121,6 +121,16 @@ getReviewDataById = async (id) => {
   }
 };
 
+findReviewsByProductId = async (id) => {
+  try {
+    const queryString = `SELECT r.id, r.username, r.review, p.id as product_id FROM reviews as r LEFT JOIN products as p ON p.id = r.product_id WHERE p.id = ${id}`;
+    const response = await db.query(queryString);
+    return response;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 getAllCarts = async () => {
   try {
     const queryString = `SELECT u.id AS user_id, u.username, CAST (SUM(p.price) as decimal (8,2)) AS total_cart_price FROM carts as c
@@ -163,4 +173,5 @@ module.exports = {
   getReviewDataById,
   getAllCarts,
   getSingleCart,
+  findReviewsByProductId,
 };

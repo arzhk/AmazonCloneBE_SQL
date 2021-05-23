@@ -54,7 +54,7 @@ router.get("/:id", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
   try {
-    const findCategory = await findById("categories", req.body.category_id);
+    const findCategory = await findById("categories", parseInt(req.body.category_id));
     if (findCategory.rowCount !== 0) {
       const response = await createNewEntry("products", req.body);
       if (response.rowCount === 1) {
@@ -90,7 +90,7 @@ router.put("/:id", async (req, res, next) => {
 
 router.delete("/:id", async (req, res, next) => {
   try {
-    const findProduct = await findById("products", req.params.id);
+    const findProduct = await findById("products", parseInt(req.params.id));
     if (findProduct.rowCount !== 0) {
       const response = await findByIdAndDelete("products", req.params.id);
       if (response.rowCount === 1) {
